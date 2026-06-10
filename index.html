@@ -180,8 +180,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="section-label">สรุปวันนี้ทั้งคู่</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="summary-cards"></div>
     </div>
-    <button class="btn btn-outline" onclick="enterParentMode()" style="width:100%;margin-top:14px;display:flex;align-items:center;justify-content:center;gap:6px">
-      <span>🔒</span> โหมดพ่อแม่
+  </div>
+  <div class="navbar">
+    <button class="nav-item active" style="flex:2">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      <span>เลือกโปรไฟล์</span>
+    </button>
+    <button class="nav-item" onclick="enterParentMode()" style="flex:1">
+      <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <span>พ่อแม่</span>
     </button>
   </div>
 </div>
