@@ -1239,7 +1239,8 @@ window.showDailyWkDay = function(idx) {
 function renderTimetable() {
   const tt = TIMETABLES[currentKid];
   if (!tt) return;
-  document.getElementById('tt-title').textContent = tt.title;
+  const ttTitleEl = document.getElementById('tt-title');
+  if (ttTitleEl) ttTitleEl.textContent = tt.title;
   const days = ['จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์'];
   const todayIdx = new Date().getDay();
   const todayName = ['','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'][todayIdx] || '';
