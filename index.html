@@ -264,6 +264,38 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       <span>หน้าหลัก</span>
     </button>
+    <button class="nav-item" onclick="kidNav('timetable')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span>ตาราง</span>
+    </button>
+    <button class="nav-item" onclick="kidNav('stars')">
+      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span>ดาว</span>
+    </button>
+    <button class="nav-item" onclick="showScreen('screen-profile')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      <span>เปลี่ยน</span>
+    </button>
+  </div>
+</div>
+
+<!-- KID TIMETABLE -->
+<div class="screen" id="screen-kid-timetable">
+  <div class="topbar">
+    <div><div style="font-size:15px;font-weight:700" id="tt-title">ตารางเรียน</div></div>
+  </div>
+  <div class="content" style="padding:10px 10px 80px">
+    <div id="timetable-content"></div>
+  </div>
+  <div class="navbar">
+    <button class="nav-item" onclick="kidNav('home')">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>หน้าหลัก</span>
+    </button>
+    <button class="nav-item active" onclick="kidNav('timetable')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span>ตาราง</span>
+    </button>
     <button class="nav-item" onclick="kidNav('stars')">
       <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
       <span>ดาว</span>
@@ -304,6 +336,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <button class="nav-item" onclick="kidNav('home')">
       <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       <span>หน้าหลัก</span>
+    </button>
+    <button class="nav-item" onclick="kidNav('timetable')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span>ตาราง</span>
     </button>
     <button class="nav-item active" onclick="kidNav('stars')">
       <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -849,6 +885,175 @@ window.selectGiveKid = (id) => { currentKid = id; renderGiveStarSelect(); };
 window.kidNav = (tab) => {
   if (tab === 'home') showScreen('screen-kid-home');
   if (tab === 'stars') showScreen('screen-kid-stars');
+  if (tab === 'timetable') { renderTimetable(); showScreen('screen-kid-timetable'); }
+};
+
+const TIMETABLES = {
+  jeffrey: {
+    title: 'เจฟฟรี่ — ม.2/1',
+    subtitle: 'ภาคเรียนที่ 1 ปีการศึกษา 2569',
+    days: [
+      { day: 'จันทร์', periods: [
+        { time: '08.30–09.20', subject: 'สังคมศึกษา', teacher: 'อ.ศศิธร', color: '#E6F1FB' },
+        { time: '09.20–10.10', subject: 'สังคมศึกษา', teacher: 'อ.ศศิธร', color: '#E6F1FB' },
+        { time: '10.20–11.10', subject: 'ภาษาอังกฤษเพิ่มเติม', teacher: 'T.Deep', color: '#FBEAF0' },
+        { time: '11.10–12.00', subject: 'ภาษาอังกฤษเพิ่มเติม', teacher: 'T.Deep', color: '#FBEAF0' },
+        { time: '12.00–13.00', subject: 'พักกลางวัน', teacher: '', color: '#F1EFE8' },
+        { time: '13.00–13.50', subject: 'คณิตฯ พื้นฐาน', teacher: 'อ.อุษา', color: '#EEEDFE' },
+        { time: '13.50–14.40', subject: 'วิทยาศาสตร์เพิ่มเติม', teacher: 'อ.จิตติมา', color: '#E1F5EE' },
+        { time: '14.50–16.30', subject: 'กิจกรรมพัฒนาศักยภาพ', teacher: '', color: '#FAEEDA' },
+      ]},
+      { day: 'อังคาร', periods: [
+        { time: '08.30–10.10', subject: 'วิทยาศาสตร์เพิ่มเติม', teacher: 'อ.ชุลีรัตน์', color: '#E1F5EE' },
+        { time: '10.20–12.00', subject: 'คณิตศาสตร์เพิ่มเติม', teacher: 'อ.ภาณุวิชญ์', color: '#EEEDFE' },
+        { time: '12.00–13.00', subject: 'พักกลางวัน', teacher: '', color: '#F1EFE8' },
+        { time: '13.00–14.40', subject: 'ภาษาไทย', teacher: 'อ.จุฬาลักษณ์', color: '#FBEAF0' },
+        { time: '14.40–15.40', subject: 'กิจกรรมพัฒนาฯ', teacher: 'อ.อมิตรา', color: '#FAEEDA' },
+        { time: '15.40–16.30', subject: 'พลศึกษา', teacher: 'อ.กัมปนาท', color: '#E6F1FB' },
+      ]},
+      { day: 'พุธ', periods: [
+        { time: '08.30–10.10', subject: 'ศิลปะ', teacher: 'อ.นฤเบศร์', color: '#FAEEDA' },
+        { time: '10.20–12.00', subject: 'วิทยาศาสตร์', teacher: 'อ.จิตติมา', color: '#E1F5EE' },
+        { time: '12.00–13.00', subject: 'พักกลางวัน', teacher: '', color: '#F1EFE8' },
+        { time: '13.00–13.50', subject: 'ภาษาไทย', teacher: 'อ.ภูริกฤตฤกษมณะ', color: '#FBEAF0' },
+        { time: '13.50–14.40', subject: 'ภาษาอังกฤษ', teacher: 'อ.อภิญญา', color: '#FBEAF0' },
+        { time: '14.50–15.40', subject: 'ภาษาอังกฤษเพิ่มเติม', teacher: 'T.Deep', color: '#FBEAF0' },
+        { time: '15.40–16.30', subject: 'วิทยาศาสตร์', teacher: 'อ.ติษฐพงศ์', color: '#E1F5EE' },
+      ]},
+      { day: 'พฤหัสบดี', periods: [
+        { time: '08.30–09.20', subject: 'แนะแนว', teacher: 'อ.บุญยานุช', color: '#F1EFE8' },
+        { time: '09.20–10.10', subject: 'สังคมศึกษา', teacher: 'อ.ศศิธร', color: '#E6F1FB' },
+        { time: '10.20–12.00', subject: 'ภาษาไทย', teacher: 'อ.ภูริกฤตฤกษมณะ', color: '#FBEAF0' },
+        { time: '12.00–13.00', subject: 'พักกลางวัน', teacher: '', color: '#F1EFE8' },
+        { time: '13.00–13.50', subject: 'กิจกรรมพัฒนาฯ', teacher: 'อ.สุดารัตน์', color: '#FAEEDA' },
+        { time: '13.50–14.40', subject: 'วิทยาศาสตร์', teacher: 'อ.ธัญสิริ', color: '#E1F5EE' },
+        { time: '14.50–15.40', subject: 'คณิตศาสตร์เพิ่มเติม', teacher: 'อ.ภาณุวิชญ์', color: '#EEEDFE' },
+        { time: '15.40–16.30', subject: 'สุขศึกษา', teacher: 'อ.กัมปนาท', color: '#E6F1FB' },
+      ]},
+      { day: 'ศุกร์', periods: [
+        { time: '08.30–10.10', subject: 'ภาษาอังกฤษ', teacher: 'อ.อภิญญา', color: '#FBEAF0' },
+        { time: '10.20–12.00', subject: 'คณิตฯ พื้นฐาน', teacher: 'อ.อุษา', color: '#EEEDFE' },
+        { time: '12.00–13.00', subject: 'พักกลางวัน', teacher: '', color: '#F1EFE8' },
+        { time: '13.00–14.40', subject: 'วิทยาศาสตร์', teacher: 'อ.รุ่งโรจน์', color: '#E1F5EE' },
+        { time: '14.50–15.40', subject: 'ชุมนุม', teacher: '', color: '#FAEEDA' },
+        { time: '15.40–16.30', subject: 'ลูกเสือ', teacher: '', color: '#FAEEDA' },
+      ]},
+    ]
+  },
+  justin: {
+    title: 'จัสติน — ป.4/2',
+    subtitle: 'ภาคเรียนที่ 1 ปีการศึกษา 2569',
+    days: [
+      { day: 'จันทร์', periods: [
+        { time: '08.30–08.50', subject: 'กิจกรรมทักษะชีวิต', teacher: '', color: '#FAEEDA' },
+        { time: '09.00–09.50', subject: 'คณิตศาสตร์', teacher: 'อ.คณิต', color: '#EEEDFE' },
+        { time: '10.00–10.50', subject: 'F&F', teacher: 'อ.อภิญญา', color: '#FBEAF0' },
+        { time: '10.50–11.40', subject: 'วิทยาศาสตร์', teacher: 'อ.ศรราม', color: '#E1F5EE' },
+        { time: '11.40–12.50', subject: 'พักกลางวัน', teacher: '', color: '#F1EFE8' },
+        { time: '12.50–13.40', subject: 'พลศึกษา', teacher: 'อ.กฤตานนท์', color: '#E6F1FB' },
+        { time: '13.40–14.30', subject: 'ภาษาไทย', teacher: 'อ.จิราพร', color: '#FBEAF0' },
+        { time: '14.30–15.30', subject: 'Phonics', teacher: 'T.Sherlene', color: '#E6F1FB' },
+        { time: '15.30–16.20', subject: 'กิจกรรมพัฒนาศักยภาพ', teacher: '', color: '#FAEEDA' },
+      ]},
+      { day: 'อังคาร', periods: [
+        { time: '08.30–08.50', subject: 'กิจกรรมทักษะชีวิต', teacher: '', color: '#FAEEDA' },
+        { time: '09.00–09.50', subject: 'การงานอาชีพ', teacher: 'อ.รุ่งโรจน์', color: '#FAEEDA' },
+        { time: '10.00–10.50', subject: 'F&F', teacher: 'อ.อภิญญา', color: '#FBEAF0' },
+        { time: '10.50–11.40', subject: 'ภาษาไทย', teacher: 'อ.จิราพร', color: '#FBEAF0' },
+        { time: '11.40–12.50', subject: 'พักกลางวัน', teacher: '', color: '#F1EFE8' },
+        { time: '12.50–13.40', subject: 'Science', teacher: 'อ.ศรราม', color: '#E1F5EE' },
+        { time: '13.40–14.30', subject: 'Phonics', teacher: 'T.Sherlene', color: '#E6F1FB' },
+        { time: '14.30–15.30', subject: 'Mathematics', teacher: 'อ.คณิต', color: '#EEEDFE' },
+        { time: '15.30–16.20', subject: 'ภาษาญี่ปุ่น', teacher: 'อ.สุดารัตน์', color: '#F1EFE8' },
+      ]},
+      { day: 'พุธ', periods: [
+        { time: '08.30–08.50', subject: 'กิจกรรมทักษะชีวิต', teacher: '', color: '#FAEEDA' },
+        { time: '09.00–09.50', subject: 'ภาษาไทย', teacher: 'อ.จิราพร', color: '#FBEAF0' },
+        { time: '10.00–10.50', subject: 'คณิตศาสตร์', teacher: 'อ.คณิต', color: '#EEEDFE' },
+        { time: '10.50–11.40', subject: 'F&F', teacher: 'อ.อภิญญา', color: '#FBEAF0' },
+        { time: '11.40–12.50', subject: 'พักกลางวัน', teacher: '', color: '#F1EFE8' },
+        { time: '12.50–13.40', subject: 'Mathematics', teacher: 'อ.คณิต', color: '#EEEDFE' },
+        { time: '13.40–14.30', subject: 'ดนตรี', teacher: '', color: '#FAEEDA' },
+        { time: '14.30–15.30', subject: 'Phonics', teacher: 'T.Sherlene', color: '#E6F1FB' },
+        { time: '15.30–16.20', subject: 'สังคมศึกษา', teacher: 'อ.ศศิธร', color: '#E6F1FB' },
+      ]},
+      { day: 'พฤหัสบดี', periods: [
+        { time: '08.30–08.50', subject: 'กิจกรรมทักษะชีวิต', teacher: '', color: '#FAEEDA' },
+        { time: '09.00–09.50', subject: 'วิทยาศาสตร์', teacher: 'อ.ศรราม', color: '#E1F5EE' },
+        { time: '10.00–10.50', subject: 'คณิตศาสตร์', teacher: 'อ.คณิต', color: '#EEEDFE' },
+        { time: '10.50–11.40', subject: 'F&F', teacher: 'อ.อภิญญา', color: '#FBEAF0' },
+        { time: '11.40–12.50', subject: 'พักกลางวัน', teacher: '', color: '#F1EFE8' },
+        { time: '12.50–13.40', subject: 'Phonics', teacher: 'T.Sherlene', color: '#E6F1FB' },
+        { time: '13.40–14.30', subject: 'ประวัติศาสตร์', teacher: 'อ.เด่นพงษ์', color: '#E6F1FB' },
+        { time: '14.30–15.30', subject: 'ภาษาไทย', teacher: 'อ.จิราพร', color: '#FBEAF0' },
+        { time: '15.30–16.20', subject: 'สุขศึกษา', teacher: 'อ.กฤตานนท์', color: '#E1F5EE' },
+      ]},
+      { day: 'ศุกร์', periods: [
+        { time: '08.30–08.50', subject: 'กิจกรรมทักษะชีวิต', teacher: '', color: '#FAEEDA' },
+        { time: '09.00–09.50', subject: 'คณิตศาสตร์', teacher: 'อ.คณิต', color: '#EEEDFE' },
+        { time: '10.00–10.50', subject: 'หน้าที่พลเมือง', teacher: 'อ.ศศิธร', color: '#E6F1FB' },
+        { time: '10.50–11.40', subject: 'วิทยาศาสตร์', teacher: 'อ.ศรราม', color: '#E1F5EE' },
+        { time: '11.40–12.50', subject: 'พักกลางวัน', teacher: '', color: '#F1EFE8' },
+        { time: '12.50–13.40', subject: 'ภาษาจีน', teacher: 'อ.อมิตรา', color: '#FAEEDA' },
+        { time: '13.40–14.30', subject: 'ทัศนศิลป์', teacher: 'อ.ภัทรพงษ์', color: '#FAEEDA' },
+        { time: '14.30–15.30', subject: 'ชุมนุม', teacher: '', color: '#F1EFE8' },
+        { time: '15.30–16.20', subject: 'ลูกเสือ', teacher: '', color: '#FAEEDA' },
+      ]},
+    ]
+  }
+};
+
+function renderTimetable() {
+  const tt = TIMETABLES[currentKid];
+  if (!tt) return;
+  document.getElementById('tt-title').textContent = tt.title;
+  const days = ['จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์'];
+  const todayIdx = new Date().getDay(); // 0=Sun,1=Mon...
+  const todayName = ['','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'][todayIdx] || '';
+  let html = `<div style="font-size:12px;color:var(--text2);margin-bottom:10px">${tt.subtitle}</div>`;
+  // Day tabs
+  html += `<div style="display:flex;gap:5px;overflow-x:auto;margin-bottom:12px;padding-bottom:4px">`;
+  days.forEach((d,i) => {
+    const isToday = d === todayName;
+    html += `<button onclick="showTTDay(${i})" id="tt-day-${i}" style="padding:6px 12px;border-radius:99px;border:1.5px solid ${isToday?'var(--purple-600)':'var(--border)'};background:${isToday?'var(--purple-600)':'#fff'};color:${isToday?'#fff':'var(--text2)'};font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer">${d}${isToday?' (วันนี้)':''}</button>`;
+  });
+  html += `</div>`;
+  // Day content
+  days.forEach((d,i) => {
+    const dayData = tt.days.find(x => x.day === d || x.day.startsWith(d));
+    const isToday = d === todayName;
+    html += `<div id="tt-day-content-${i}" style="display:${i===0||isToday?'block':'none'}">`;
+    if (dayData) {
+      dayData.periods.forEach(p => {
+        const isPause = p.subject === 'พักกลางวัน';
+        html += `<div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);align-items:center">
+          <div style="min-width:85px;font-size:11px;color:var(--text2);flex-shrink:0">${p.time}</div>
+          <div style="width:4px;height:36px;border-radius:2px;background:${isPause?'var(--border)':p.color};flex-shrink:0"></div>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:${isPause?'400':'600'};color:${isPause?'var(--text3)':'var(--text)'}">${p.subject}</div>
+            ${p.teacher ? `<div style="font-size:11px;color:var(--text2);margin-top:1px">${p.teacher}</div>` : ''}
+          </div>
+        </div>`;
+      });
+    }
+    html += `</div>`;
+  });
+  document.getElementById('timetable-content').innerHTML = html;
+  // Auto scroll to today
+  if (todayIdx >= 1 && todayIdx <= 5) {
+    const idx = todayIdx - 1;
+    setTimeout(() => showTTDay(idx), 100);
+  }
+}
+
+window.showTTDay = (idx) => {
+  const days = ['จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์'];
+  days.forEach((_, i) => {
+    const btn = document.getElementById(`tt-day-${i}`);
+    const content = document.getElementById(`tt-day-content-${i}`);
+    if (btn) { btn.style.background = i===idx?'var(--purple-600)':'#fff'; btn.style.color = i===idx?'#fff':'var(--text2)'; btn.style.borderColor = i===idx?'var(--purple-600)':'var(--border)'; }
+    if (content) content.style.display = i===idx?'block':'none';
+  });
 };
 window.enterParentMode = () => {
   pinValue = '';
