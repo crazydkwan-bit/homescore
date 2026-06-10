@@ -615,9 +615,27 @@ const KIDS = {
   jeffrey: { name: 'เจฟฟรี่', av: 'JF', cls: 'av-j' },
   justin:  { name: 'จัสติน',  av: 'JS', cls: 'av-t' }
 };
+const STUDY_BY_DAY = {
+  1: 'ทบทวน: คณิตศาสตร์',   // จันทร์
+  2: 'ทบทวน: วิทยาศาสตร์',  // อังคาร
+  3: 'ทบทวน: ภาษาไทย',      // พุธ
+  4: 'ทบทวน: คณิต+วิทย์',   // พฤหัสฯ
+  5: 'ทบทวน: ภาษาอังกฤษ',   // ศุกร์
+};
+function getStudyLabel() {
+  const day = new Date().getDay();
+  return STUDY_BY_DAY[day] || 'ทบทวนวิชา';
+}
+function getTasks() {
+  return TASKS.map(function(t) {
+    if (t.id === 'study') return Object.assign({}, t, { label: getStudyLabel() });
+    return t;
+  });
+}
+
 const TASKS = [
   { id: 'exercise', label: 'ออกกำลังกาย', chip: 'chip-ex', time: '17:30' },
-  { id: 'study',    label: 'ทบทวนวิชา',   chip: 'chip-st', time: '20:00' },
+  { id: 'study',    label: 'ทบทวนวิชา',   chip: 'chip-st', time: '20:00', dynamic: true },
   { id: 'shadow',   label: 'Shadowing',    chip: 'chip-sh', time: '20:45' }
 ];
 const DEFAULT_REWARDS = [
@@ -798,7 +816,7 @@ function renderKidHome() {
   document.getElementById('kid-prog-hint').textContent = `อีก ${Math.max(0, nextReward.cost - stars)} ดาว = ${nextReward.label}`;
   // Tasks
   const tasks = dbData[currentKid].tasks || {};
-  document.getElementById('kid-tasks').innerHTML = TASKS.map(t => {
+  document.getElementById('kid-tasks').innerHTML = getTasks().map(t => {
     const done = !!tasks[t.id];
     return `<div class="task-row">
       <div class="chk ${done ? 'done' : ''}"></div>
@@ -855,7 +873,7 @@ function renderParentSummary() {
 
 function renderCheckTasks() {
   const tasks = dbData[checkKid].tasks || {};
-  document.getElementById('check-tasks').innerHTML = TASKS.map(t => {
+  document.getElementById('check-tasks').innerHTML = getTasks().map(t => {
     const done = !!tasks[t.id];
     return `<div class="task-row">
       <div class="chk ${done?'done':''}" onclick="toggleTask('${t.id}')"></div>
