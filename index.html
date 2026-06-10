@@ -1008,35 +1008,39 @@ function renderTimetable() {
   if (!tt) return;
   document.getElementById('tt-title').textContent = tt.title;
   const days = ['จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์'];
-  const todayIdx = new Date().getDay(); // 0=Sun,1=Mon...
+  const todayIdx = new Date().getDay();
   const todayName = ['','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'][todayIdx] || '';
-  let html = `<div style="font-size:12px;color:var(--text2);margin-bottom:10px">${tt.subtitle}</div>`;
-  // Day tabs
-  html += `<div style="display:flex;gap:5px;overflow-x:auto;margin-bottom:12px;padding-bottom:4px">`;
-  days.forEach((d,i) => {
+  let html = '<div style="font-size:12px;color:var(--text2);margin-bottom:10px">' + tt.subtitle + '</div>';
+  html += '<div style="display:flex;gap:5px;overflow-x:auto;margin-bottom:12px;padding-bottom:4px">';
+  days.forEach(function(d,i) {
     const isToday = d === todayName;
-    html += `<button onclick="showTTDay(${i})" id="tt-day-${i}" style="padding:6px 12px;border-radius:99px;border:1.5px solid ${isToday?'var(--purple-600)':'var(--border)'};background:${isToday?'var(--purple-600)':'#fff'};color:${isToday?'#fff':'var(--text2)'};font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer">${d}${isToday?' (วันนี้)':''}</button>`;
+    const btnBg = isToday ? 'var(--purple-600)' : '#fff';
+    const btnColor = isToday ? '#fff' : 'var(--text2)';
+    const btnBorder = isToday ? 'var(--purple-600)' : 'var(--border)';
+    const label = d + (isToday ? ' (วันนี้)' : '');
+    html += '<button onclick="showTTDay(' + i + ')" id="tt-day-' + i + '" style="padding:6px 12px;border-radius:99px;border:1.5px solid ' + btnBorder + ';background:' + btnBg + ';color:' + btnColor + ';font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer">' + label + '</button>';
   });
-  html += `</div>`;
-  // Day content
-  days.forEach((d,i) => {
-    const dayData = tt.days.find(x => x.day === d || x.day.startsWith(d));
+  html += '</div>';
+  days.forEach(function(d,i) {
+    const dayData = tt.days.find(function(x){ return x.day === d || x.day.startsWith(d); });
     const isToday = d === todayName;
-    html += `<div id="tt-day-content-${i}" style="display:${i===0||isToday?'block':'none'}">`;
+    const display = (i===0 || isToday) ? 'block' : 'none';
+    html += '<div id="tt-day-content-' + i + '" style="display:' + display + '">';
     if (dayData) {
-      dayData.periods.forEach(p => {
+      dayData.periods.forEach(function(p) {
         const isPause = p.subject === 'พักกลางวัน';
-        html += `<div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);align-items:center">
-          <div style="min-width:85px;font-size:11px;color:var(--text2);flex-shrink:0">${p.time}</div>
-          <div style="width:4px;height:36px;border-radius:2px;background:${isPause?'var(--border)':p.color};flex-shrink:0"></div>
-          <div style="flex:1">
-            <div style="font-size:13px;font-weight:${isPause?'400':'600'};color:${isPause?'var(--text3)':'var(--text)'}">${p.subject}</div>
-            ${p.teacher ? `<div style="font-size:11px;color:var(--text2);margin-top:1px">${p.teacher}</div>` : ''}
-          </div>
-        </div>`;
+        const barColor = isPause ? 'var(--border)' : p.color;
+        const fw = isPause ? '400' : '600';
+        const fc = isPause ? 'var(--text3)' : 'var(--text)';
+        const teacherHtml = p.teacher ? '<div style="font-size:11px;color:var(--text2);margin-top:1px">' + p.teacher + '</div>' : '';
+        html += '<div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);align-items:center">'
+          + '<div style="min-width:85px;font-size:11px;color:var(--text2);flex-shrink:0">' + p.time + '</div>'
+          + '<div style="width:4px;height:36px;border-radius:2px;background:' + barColor + ';flex-shrink:0"></div>'
+          + '<div style="flex:1"><div style="font-size:13px;font-weight:' + fw + ';color:' + fc + '">' + p.subject + '</div>' + teacherHtml + '</div>'
+          + '</div>';
       });
     }
-    html += `</div>`;
+    html += '</div>';
   });
   document.getElementById('timetable-content').innerHTML = html;
   // Auto scroll to today
