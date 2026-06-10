@@ -45,6 +45,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .chip-gm{background:#FAECE7;color:#712B13}
 .chip-sl{background:var(--gray-50);color:var(--gray-600)}
 .chip-amb{background:var(--amber-50);color:var(--amber-800)}
+.cex{background:var(--teal-50);color:var(--teal-600)}
+.cst{background:var(--purple-50);color:var(--purple-800)}
+.csh{background:var(--amber-50);color:var(--amber-800)}
+.cgm{background:#FAECE7;color:#712B13}
+.cmv{background:#EDE8FF;color:#3C3489}
+.csl{background:var(--gray-50);color:var(--gray-600)}
+.cre{background:var(--pink-50);color:var(--pink-600)}
+.cfr{background:var(--green-50);color:var(--green-600)}
+.cba{background:var(--blue-50);color:var(--blue-600)}
+.ctu{background:var(--blue-50);color:var(--blue-800)}
+.chip{display:inline-flex;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;white-space:nowrap;margin:2px 2px 2px 0}
+.daily-row{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.daily-row:last-child{border-bottom:none}
+.daily-time{min-width:90px;font-size:11px;color:var(--text2);flex-shrink:0;padding-top:3px}
+.section-label{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px}
 
 /* Buttons */
 .btn{padding:11px 20px;border-radius:99px;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:opacity .15s}
@@ -282,10 +297,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <!-- KID TIMETABLE -->
 <div class="screen" id="screen-kid-timetable">
   <div class="topbar">
-    <div><div style="font-size:15px;font-weight:700" id="tt-title">ตารางเรียน</div></div>
+    <div><h2 style="font-size:15px;font-weight:700;margin:0">ตาราง</h2></div>
   </div>
-  <div class="content" style="padding:10px 10px 80px">
-    <div id="timetable-content"></div>
+  <div style="padding:0 16px;background:#fff;border-bottom:1px solid var(--border)">
+    <div style="display:flex">
+      <button id="tt-tab-daily" onclick="switchTTTab('daily')" style="flex:1;padding:10px;border:none;border-bottom:2.5px solid var(--purple-600);background:none;font-size:14px;font-weight:700;color:var(--purple-600);cursor:pointer">ตารางประจำวัน</button>
+      <button id="tt-tab-school" onclick="switchTTTab('school')" style="flex:1;padding:10px;border:none;border-bottom:2.5px solid transparent;background:none;font-size:14px;font-weight:500;color:var(--text2);cursor:pointer">ตารางเรียน</button>
+    </div>
+  </div>
+  <div class="content" style="padding:10px 14px 80px">
+    <div id="tt-daily-content"></div>
+    <div id="timetable-content" style="display:none"></div>
   </div>
   <div class="navbar">
     <button class="nav-item" onclick="kidNav('home')">
@@ -384,6 +406,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <div style="flex:1;font-size:14px;font-weight:500">แลกรางวัล</div>
         <span style="color:var(--text3)">›</span>
       </div>
+      <div class="menu-row" onclick="showScreen('screen-manage-rewards')">
+        <div class="menu-icon" style="background:var(--purple-50)">⚙️</div>
+        <div style="flex:1;font-size:14px;font-weight:500">จัดการรางวัล</div>
+        <span style="color:var(--text3)">›</span>
+      </div>
       <div class="menu-row" onclick="showScreen('screen-stats')">
         <div class="menu-icon" style="background:var(--blue-50)">📊</div>
         <div style="flex:1;font-size:14px;font-weight:500">สถิติ</div>
@@ -462,6 +489,56 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <button class="btn btn-amber" onclick="giveCustomStar()">ให้ดาว ⭐</button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- MANAGE REWARDS -->
+<div class="screen" id="screen-manage-rewards">
+  <div class="topbar">
+    <button onclick="showScreen('screen-parent')" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--text2)">‹</button>
+    <h2>จัดการรางวัล</h2>
+    <button onclick="openAddReward()" style="background:var(--purple-600);color:#fff;border:none;border-radius:99px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer">+ เพิ่ม</button>
+  </div>
+  <div class="content">
+    <div class="section-label">รางวัลทั้งหมด</div>
+    <div id="manage-rewards-list"></div>
+    <div class="info-box" style="margin-top:12px">
+      <span>💡</span><span>กดแก้ไขเพื่อเปลี่ยนชื่อหรือราคาดาว กดลบเพื่อเอารางวัลออก</span>
+    </div>
+  </div>
+</div>
+
+<!-- ADD/EDIT REWARD -->
+<div class="screen" id="screen-add-reward">
+  <div class="topbar">
+    <button onclick="showScreen('screen-manage-rewards')" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--text2)">‹</button>
+    <h2 id="add-reward-title">เพิ่มรางวัล</h2>
+    <div style="width:60px"></div>
+  </div>
+  <div class="content">
+    <div class="section-label">ไอคอน</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px" id="icon-picker">
+      🎮 🕹 🎬 🍦 🍕 🍰 🌙 🎨 📚 🚴 🏊 ⚽ 🎵 🎭 🎪 🎠 🏆 🎁 🌟 🦄 🍫 🧁 🎯 🎲 🛒 🎀 🎳 🎻 🎹 🎸
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <div id="selected-icon-preview" style="width:48px;height:48px;border-radius:12px;background:var(--amber-50);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">🎮</div>
+      <div style="font-size:13px;color:var(--text2)">กดไอคอนด้านบนเพื่อเลือก</div>
+    </div>
+
+    <div class="section-label">ชื่อรางวัล</div>
+    <input id="reward-name" placeholder="เช่น เล่นเกมเพิ่ม 30 นาที" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:14px">
+
+    <div class="section-label">ราคา (ดาว)</div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+      <button onclick="rewardCostAdj(-1)" style="width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:none;font-size:20px;cursor:pointer">−</button>
+      <div style="flex:1;text-align:center">
+        <div style="font-size:32px;font-weight:700;color:var(--text)" id="reward-cost-display">10</div>
+        <div style="font-size:12px;color:var(--text2)">ดาว</div>
+      </div>
+      <button onclick="rewardCostAdj(1)" style="width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:none;font-size:20px;cursor:pointer">+</button>
+    </div>
+
+    <button class="btn btn-primary" onclick="saveReward()" id="save-reward-btn">บันทึกรางวัล</button>
   </div>
 </div>
 
@@ -545,13 +622,14 @@ const TASKS = [
   { id: 'study',    label: 'ทบทวนวิชา',   chip: 'chip-st', time: '20:00' },
   { id: 'shadow',   label: 'Shadowing',    chip: 'chip-sh', time: '20:45' }
 ];
-const REWARDS = [
+const DEFAULT_REWARDS = [
   { id: 'game30',  label: 'เล่นเกมเพิ่ม 30 นาที', cost: 20, icon: '🎮', color: '#FAEEDA' },
   { id: 'movie',   label: 'ดูหนังเพิ่ม 1 เรื่อง',  cost: 15, icon: '🎬', color: '#FBEAF0' },
   { id: 'sleep30', label: 'นอนดึกได้ 30 นาที',     cost: 12, icon: '🌙', color: '#E6F1FB' },
   { id: 'snack',   label: 'ขนมพิเศษ 1 อย่าง',      cost: 10, icon: '🍦', color: '#E1F5EE' },
   { id: 'game60',  label: 'เล่นเกมเพิ่ม 1 ชั่วโมง', cost: 35, icon: '🕹', color: '#EEEDFE' }
 ];
+let REWARDS = [...DEFAULT_REWARDS];
 const PIN = '1234';
 
 // ---- STATE ----
@@ -579,6 +657,17 @@ function getTodayThai() {
 
 // ---- FIRESTORE ----
 async function initData() {
+  // Rewards realtime sync
+  const rewardsRef = doc(db, 'config', 'rewards');
+  onSnapshot(rewardsRef, s => {
+    if (s.exists() && s.data().list) {
+      REWARDS = s.data().list;
+    } else {
+      REWARDS = [...DEFAULT_REWARDS];
+    }
+    refreshUI();
+  });
+
   for (const kid of Object.keys(KIDS)) {
     const ref = doc(db, 'kids', kid);
     const snap = await getDoc(ref);
@@ -623,7 +712,8 @@ async function saveTask(kid, taskId, done) {
     await setDoc(ref, { _rewarded: true }, { merge: true });
     await addStars(kid, 3, 'ทำครบทุกกิจกรรมวันนี้');
   }
-  addHistory(kid, done ? `เช็ก: ${TASKS.find(t=>t.id===taskId)?.label}` : `ยกเลิก: ${TASKS.find(t=>t.id===taskId)?.label}`, 0, done ? '✅' : '↩️');
+  const taskLabel = TASKS.find(t=>t.id===taskId)?.label || taskId;
+  addHistory(kid, done ? 'เช็ก: ' + taskLabel : 'ยกเลิก: ' + taskLabel, 0, done ? '✅' : '↩️');
 }
 
 async function addStars(kid, amount, reason) {
@@ -662,6 +752,7 @@ function refreshUI() {
   renderStats();
   renderNotif();
   renderGiveStarSelect();
+  renderManageRewards();
 }
 
 function renderProfileCards() {
@@ -806,7 +897,7 @@ function renderRedeemList() {
         <div style="display:flex;align-items:center;gap:3px;margin-top:4px"><span>⭐</span><span style="font-size:12px;font-weight:600;color:var(--amber-800)">${r.cost} ดาว</span></div>
       </div>
       <button class="redeem-btn ${can?'redeem-on':diff<=8?'redeem-soon':'redeem-off'}" onclick="doRedeem('${r.id}','${r.label}',${r.cost})">
-        ${can ? 'แลก' : diff<=8 ? `อีก ${diff} ดาว` : `${r.cost} ดาว`}
+        ${can ? 'แลก' : diff<=8 ? 'อีก ' + diff + ' ดาว' : r.cost + ' ดาว'}
       </button>
     </div>`;
   }).join('');
@@ -885,7 +976,39 @@ window.selectGiveKid = (id) => { currentKid = id; renderGiveStarSelect(); };
 window.kidNav = (tab) => {
   if (tab === 'home') showScreen('screen-kid-home');
   if (tab === 'stars') showScreen('screen-kid-stars');
-  if (tab === 'timetable') { renderTimetable(); showScreen('screen-kid-timetable'); }
+  if (tab === 'timetable') {
+    renderDailySchedule();
+    renderTimetable();
+    showScreen('screen-kid-timetable');
+    switchTTTab('daily');
+  }
+};
+
+window.switchTTTab = (tab) => {
+  const daily = document.getElementById('tt-daily-content');
+  const school = document.getElementById('timetable-content');
+  const btnDaily = document.getElementById('tt-tab-daily');
+  const btnSchool = document.getElementById('tt-tab-school');
+  if (!daily || !school) return;
+  if (tab === 'daily') {
+    daily.style.display = 'block';
+    school.style.display = 'none';
+    btnDaily.style.borderBottomColor = 'var(--purple-600)';
+    btnDaily.style.color = 'var(--purple-600)';
+    btnDaily.style.fontWeight = '700';
+    btnSchool.style.borderBottomColor = 'transparent';
+    btnSchool.style.color = 'var(--text2)';
+    btnSchool.style.fontWeight = '500';
+  } else {
+    daily.style.display = 'none';
+    school.style.display = 'block';
+    btnSchool.style.borderBottomColor = 'var(--purple-600)';
+    btnSchool.style.color = 'var(--purple-600)';
+    btnSchool.style.fontWeight = '700';
+    btnDaily.style.borderBottomColor = 'transparent';
+    btnDaily.style.color = 'var(--text2)';
+    btnDaily.style.fontWeight = '500';
+  }
 };
 
 const TIMETABLES = {
@@ -1000,6 +1123,116 @@ const TIMETABLES = {
         { time: '15.30–16.20', subject: 'ลูกเสือ', teacher: '', color: '#FAEEDA' },
       ]},
     ]
+  }
+};
+
+function renderDailySchedule() {
+  const el = document.getElementById('tt-daily-content');
+  if (!el) return;
+  const days = ['จันทร์','อังคาร','พุธ ✦','พฤหัสฯ','ศุกร์'];
+  const todayIdx = new Date().getDay();
+  const todayNames = ['','จันทร์','อังคาร','พุธ ✦','พฤหัสฯ','ศุกร์'];
+  const todayName = todayNames[todayIdx] || '';
+
+  const WEEKDAY_SCHEDULE = {
+    'จันทร์':    [{t:'17:30–18:00',chips:[{l:'ออกกำลังกาย',c:'cex'}]},{t:'18:00–20:00',chips:[{l:'อาบน้ำ + ข้าวเย็น',c:'cba'},{l:'เรียนพิเศษ (ถ้ามี)',c:'cba'}]},{t:'20:00–20:45',chips:[{l:'ทบทวน: คณิต',c:'cst'}],note:'45 / 20 นาที ถ้าใช้โควต้า'},{t:'20:45–21:00',chips:[{l:'Shadowing',c:'csh'}]},{t:'21:00–21:30',chips:[{l:'นอน',c:'csl'}]}],
+    'อังคาร':   [{t:'17:30–18:00',chips:[{l:'ออกกำลังกาย',c:'cex'}]},{t:'18:00–20:00',chips:[{l:'อาบน้ำ + ข้าวเย็น',c:'cba'},{l:'เรียนพิเศษ (ถ้ามี)',c:'cba'}]},{t:'20:00–20:45',chips:[{l:'ทบทวน: วิทยาศาสตร์',c:'cst'}],note:'45 / 20 นาที ถ้าใช้โควต้า'},{t:'20:45–21:00',chips:[{l:'Shadowing',c:'csh'}]},{t:'21:00–21:30',chips:[{l:'นอน',c:'csl'}]}],
+    'พุธ ✦':    [{t:'17:30–18:00',chips:[{l:'พักผ่อน',c:'cre'}]},{t:'18:00–20:00',chips:[{l:'อาบน้ำ + ข้าวเย็น',c:'cba'},{l:'เรียนพิเศษ (ถ้ามี)',c:'cba'}]},{t:'20:00–20:45',chips:[{l:'ทบทวน: ภาษาไทย',c:'cst'}],note:'45 / 20 นาที ถ้าใช้โควต้า'},{t:'20:45–21:00',chips:[{l:'เวลาอิสระ',c:'cfr'}],note:'ไม่ต้อง Shadowing'},{t:'21:00–21:30',chips:[{l:'นอน',c:'csl'}]}],
+    'พฤหัสฯ':  [{t:'17:30–18:00',chips:[{l:'ออกกำลังกาย',c:'cex'}]},{t:'18:00–20:00',chips:[{l:'อาบน้ำ + ข้าวเย็น',c:'cba'},{l:'เรียนพิเศษ (ถ้ามี)',c:'cba'}]},{t:'20:00–20:45',chips:[{l:'ทบทวน: คณิต+วิทย์',c:'cst'}],note:'45 / 20 นาที ถ้าใช้โควต้า'},{t:'20:45–21:00',chips:[{l:'Shadowing',c:'csh'}]},{t:'21:00–21:30',chips:[{l:'นอน',c:'csl'}]}],
+    'ศุกร์':    [{t:'17:30–18:00',chips:[{l:'ออกกำลังกาย',c:'cex'}]},{t:'18:00–20:00',chips:[{l:'อาบน้ำ + ข้าวเย็น',c:'cba'},{l:'เรียนพิเศษ (ถ้ามี)',c:'cba'}]},{t:'20:00–20:30',chips:[{l:'ทบทวน: อังกฤษ',c:'cst'}],note:'30 นาที'},{t:'20:30–20:45',chips:[{l:'Shadowing',c:'csh'}]},{t:'20:45–22:45',chips:[{l:'เล่นเกม 2 ชม.',c:'cgm'}]}],
+  };
+  const WEEKEND_SCHEDULE = {
+    'เสาร์': [
+      {t:'07:00–07:45',chips:[{l:'ออกกำลังกาย',c:'cex'}]},
+      {t:'07:45–08:30',chips:[{l:'อาบน้ำ + ข้าวเช้า',c:'cba'}]},
+      {t:'08:30–10:00',chips:[{l:'เล่นเกม 1:30 ชม.',c:'cgm'}],note:'รางวัลหลังภารกิจเช้าเสร็จ'},
+      {t:'10:00 – บ่าย',chips:[{l:'เวลาว่าง',c:'cfr'},{l:'Shadowing 15 นาที',c:'csh'}],note:'ตอนไหนก็ได้ในบ่าย'},
+      {t:'17:30–19:30',chips:[{l:'อาบน้ำ + ข้าวเย็น',c:'cba'}],note:'เสร็จก่อน 19:30'},
+      {t:'19:30–21:30',chips:[{l:'เล่นเกม 2 ชม.',c:'cgm'}]},
+      {t:'21:30',chips:[{l:'นอน',c:'csl'}]},
+    ],
+    'อาทิตย์': [
+      {t:'ตื่นนอน',chips:[{l:'วันพักผ่อน',c:'cre'}]},
+      {t:'10:00 – บ่าย',chips:[{l:'เวลาว่าง',c:'cfr'},{l:'Shadowing 15 นาที',c:'csh'}],note:'ตอนไหนก็ได้ในบ่าย'},
+      {t:'17:30–18:30',chips:[{l:'อาบน้ำ + ข้าวเย็น',c:'cba'}],note:'เสร็จก่อน 18:30'},
+      {t:'18:30–20:30',chips:[{l:'ดูหนัง 2 ชม.',c:'cmv'}]},
+      {t:'20:30–21:00',chips:[{l:'เช็กกระเป๋า',c:'cfr'}],note:'เตรียมวันจันทร์'},
+      {t:'21:00',chips:[{l:'นอน',c:'csl'}]},
+    ],
+  };
+
+  function makeRows(schedule) {
+    return schedule.map(function(row) {
+      const chipsHtml = row.chips.map(function(ch) {
+        return '<span class="chip ' + ch.c + '">' + ch.l + '</span>';
+      }).join('');
+      const noteHtml = row.note ? '<div style="font-size:11px;color:var(--text2);margin-top:2px">' + row.note + '</div>' : '';
+      return '<div class="daily-row"><div class="daily-time">' + row.t + '</div><div>' + chipsHtml + noteHtml + '</div></div>';
+    }).join('');
+  }
+
+  // Day tabs for weekdays
+  let activeDayIdx = todayIdx >= 1 && todayIdx <= 5 ? todayIdx - 1 : 0;
+  const weekdayKeys = ['จันทร์','อังคาร','พุธ ✦','พฤหัสฯ','ศุกร์'];
+  const weekdayLabels = ['จันทร์','อังคาร','พุธ ✦','พฤหัสฯ','ศุกร์'];
+
+  let html = '<div class="section-label">วันธรรมดา (จันทร์–ศุกร์)</div>';
+  html += '<div style="display:flex;gap:4px;overflow-x:auto;margin-bottom:10px;padding-bottom:2px">';
+  weekdayLabels.forEach(function(d, i) {
+    const isActive = i === activeDayIdx;
+    html += '<button onclick="showDailyDay(' + i + ')" id="dd-btn-' + i + '" style="padding:5px 10px;border-radius:99px;border:1px solid ' + (isActive ? 'var(--purple-600)' : 'var(--border)') + ';background:' + (isActive ? 'var(--purple-600)' : 'none') + ';color:' + (isActive ? '#fff' : 'var(--text2)') + ';font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer">' + d + '</button>';
+  });
+  html += '</div>';
+  weekdayKeys.forEach(function(d, i) {
+    html += '<div id="dd-day-' + i + '" style="display:' + (i === activeDayIdx ? 'block' : 'none') + '">' + makeRows(WEEKDAY_SCHEDULE[d]) + '</div>';
+  });
+
+  // Weekend
+  html += '<div class="section-label" style="margin-top:16px">วันหยุด (เสาร์–อาทิตย์)</div>';
+  const wkdays = ['เสาร์','อาทิตย์'];
+  const initWk = todayIdx === 6 ? 0 : todayIdx === 0 ? 1 : 0;
+  html += '<div style="display:flex;gap:4px;margin-bottom:10px">';
+  wkdays.forEach(function(d, i) {
+    const isActive = i === initWk;
+    html += '<button onclick="showDailyWkDay(' + i + ')" id="dw-btn-' + i + '" style="padding:5px 10px;border-radius:99px;border:1px solid ' + (isActive ? 'var(--purple-600)' : 'var(--border)') + ';background:' + (isActive ? 'var(--purple-600)' : 'none') + ';color:' + (isActive ? '#fff' : 'var(--text2)') + ';font-size:11px;font-weight:600;cursor:pointer">' + d + '</button>';
+  });
+  html += '</div>';
+  wkdays.forEach(function(d, i) {
+    html += '<div id="dw-day-' + i + '" style="display:' + (i === initWk ? 'block' : 'none') + '">' + makeRows(WEEKEND_SCHEDULE[d]) + '</div>';
+  });
+
+  // Quota rules
+  html += '<div class="section-label" style="margin-top:16px">กฎโควต้า 20 นาที</div>';
+  html += '<div style="background:#EAF3DE;border-radius:var(--border-radius-md);padding:12px 14px;border:0.5px solid #C0DD97">';
+  const rules = [
+    {badge:'ใช้ได้',bc:'#E1F5EE',tc:'#085041',desc:'เหนื่อยมากผิดปกติ เช่น สอบ ป่วย การบ้านพิเศษ'},
+    {badge:'ใช้ไม่ได้',bc:'#FCEBEB',tc:'#791F1F',desc:'แค่ขี้เกียจ หรือใช้ไปแล้วในสัปดาห์นั้น'},
+    {badge:'สะสม/ยืมไม่ได้',bc:'#FAEEDA',tc:'#633806',desc:'โควต้าไม่ข้ามสัปดาห์'},
+    {badge:'รีเซ็ต',bc:'#F1EFE8',tc:'#444441',desc:'โควต้าใหม่เริ่มทุกวันจันทร์'},
+  ];
+  rules.forEach(function(r) {
+    html += '<div style="display:flex;gap:8px;margin-bottom:6px;align-items:flex-start"><span style="padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600;background:' + r.bc + ';color:' + r.tc + ';white-space:nowrap;flex-shrink:0">' + r.badge + '</span><span style="font-size:12px;color:var(--text2)">' + r.desc + '</span></div>';
+  });
+  html += '</div>';
+
+  el.innerHTML = html;
+}
+
+window.showDailyDay = function(idx) {
+  for (let i = 0; i < 5; i++) {
+    const btn = document.getElementById('dd-btn-' + i);
+    const day = document.getElementById('dd-day-' + i);
+    if (btn) { btn.style.background = i===idx ? 'var(--purple-600)' : 'none'; btn.style.color = i===idx ? '#fff' : 'var(--text2)'; btn.style.borderColor = i===idx ? 'var(--purple-600)' : 'var(--border)'; }
+    if (day) day.style.display = i===idx ? 'block' : 'none';
+  }
+};
+
+window.showDailyWkDay = function(idx) {
+  for (let i = 0; i < 2; i++) {
+    const btn = document.getElementById('dw-btn-' + i);
+    const day = document.getElementById('dw-day-' + i);
+    if (btn) { btn.style.background = i===idx ? 'var(--purple-600)' : 'none'; btn.style.color = i===idx ? '#fff' : 'var(--text2)'; btn.style.borderColor = i===idx ? 'var(--purple-600)' : 'var(--border)'; }
+    if (day) day.style.display = i===idx ? 'block' : 'none';
   }
 };
 
@@ -1120,6 +1353,102 @@ window.showToast = (msg) => {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
+};
+
+// ---- MANAGE REWARDS ----
+const ICON_OPTIONS = ['🎮','🕹','🎬','🍦','🍕','🍰','🌙','🎨','📚','🚴','🏊','⚽','🎵','🎭','🎪','🎠','🏆','🎁','🌟','🦄','🍫','🧁','🎯','🎲','🛒','🎀','🎳','🎻','🎹','🎸'];
+const REWARD_COLORS = ['#FAEEDA','#FBEAF0','#E6F1FB','#E1F5EE','#EEEDFE','#EAF3DE','#FCEBEB'];
+let editingRewardId = null;
+let selectedIcon = '🎮';
+let rewardCost = 10;
+
+function renderManageRewards() {
+  const el = document.getElementById('manage-rewards-list');
+  if (!el) return;
+  el.innerHTML = REWARDS.length ? REWARDS.map(r => {
+    return '<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">'
+      + '<div style="width:44px;height:44px;border-radius:10px;background:' + r.color + ';display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">' + r.icon + '</div>'
+      + '<div style="flex:1"><div style="font-size:14px;font-weight:600">' + r.label + '</div>'
+      + '<div style="font-size:12px;color:var(--amber-600);margin-top:2px">⭐ ' + r.cost + ' ดาว</div></div>'
+      + '<button onclick="editReward(\'' + r.id + '\')" style="padding:6px 12px;border-radius:99px;border:1px solid var(--border);background:none;font-size:12px;cursor:pointer;margin-right:6px">แก้ไข</button>'
+      + '<button onclick="deleteReward(\'' + r.id + '\')" style="padding:6px 12px;border-radius:99px;border:none;background:var(--red-50);color:var(--red-600);font-size:12px;cursor:pointer;font-weight:600">ลบ</button>'
+      + '</div>';
+  }).join('') : '<div style="text-align:center;padding:24px;color:var(--text3)">ยังไม่มีรางวัล<br>กด + เพิ่ม เพื่อเพิ่มรางวัลแรก</div>';
+}
+
+function setupIconPicker() {
+  const el = document.getElementById('icon-picker');
+  if (!el) return;
+  el.innerHTML = ICON_OPTIONS.map(ic =>
+    '<button onclick="selectIcon(\'' + ic + '\')" style="width:42px;height:42px;border-radius:10px;border:2px solid ' + (ic===selectedIcon?'var(--purple-600)':'var(--border)') + ';background:' + (ic===selectedIcon?'var(--purple-50)':'none') + ';font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center" id="icon-btn-' + ic.codePointAt(0) + '">' + ic + '</button>'
+  ).join('');
+}
+
+window.selectIcon = (ic) => {
+  selectedIcon = ic;
+  document.getElementById('selected-icon-preview').textContent = ic;
+  setupIconPicker();
+};
+
+window.rewardCostAdj = (d) => {
+  rewardCost = Math.max(1, Math.min(100, rewardCost + d));
+  document.getElementById('reward-cost-display').textContent = rewardCost;
+};
+
+window.editReward = (id) => {
+  const r = REWARDS.find(x => x.id === id);
+  if (!r) return;
+  editingRewardId = id;
+  selectedIcon = r.icon;
+  rewardCost = r.cost;
+  document.getElementById('add-reward-title').textContent = 'แก้ไขรางวัล';
+  document.getElementById('reward-name').value = r.label;
+  document.getElementById('reward-cost-display').textContent = r.cost;
+  document.getElementById('save-reward-btn').textContent = 'บันทึกการแก้ไข';
+  setupIconPicker();
+  document.getElementById('selected-icon-preview').textContent = r.icon;
+  showScreen('screen-add-reward');
+};
+
+window.deleteReward = async (id) => {
+  if (!confirm('ลบรางวัลนี้ออกใช่ไหม?')) return;
+  const newList = REWARDS.filter(r => r.id !== id);
+  await setDoc(doc(db, 'config', 'rewards'), { list: newList });
+  showToast('ลบรางวัลแล้ว');
+};
+
+window.saveReward = async () => {
+  const name = document.getElementById('reward-name').value.trim();
+  if (!name) { showToast('กรุณาใส่ชื่อรางวัล'); return; }
+  const colorPick = REWARD_COLORS[Math.floor(Math.random() * REWARD_COLORS.length)];
+  if (editingRewardId) {
+    const newList = REWARDS.map(r => r.id === editingRewardId
+      ? { ...r, label: name, cost: rewardCost, icon: selectedIcon }
+      : r
+    );
+    await setDoc(doc(db, 'config', 'rewards'), { list: newList });
+    showToast('แก้ไขรางวัลแล้ว');
+  } else {
+    const newReward = { id: 'r_' + Date.now(), label: name, cost: rewardCost, icon: selectedIcon, color: colorPick };
+    const newList = [...REWARDS, newReward];
+    await setDoc(doc(db, 'config', 'rewards'), { list: newList });
+    showToast('เพิ่มรางวัลแล้ว! ⭐');
+  }
+  editingRewardId = null;
+  showScreen('screen-manage-rewards');
+};
+
+window.openAddReward = () => {
+  editingRewardId = null;
+  selectedIcon = '🎮';
+  rewardCost = 10;
+  document.getElementById('add-reward-title').textContent = 'เพิ่มรางวัล';
+  document.getElementById('reward-name').value = '';
+  document.getElementById('reward-cost-display').textContent = '10';
+  document.getElementById('save-reward-btn').textContent = 'บันทึกรางวัล';
+  document.getElementById('selected-icon-preview').textContent = '🎮';
+  setupIconPicker();
+  showScreen('screen-add-reward');
 };
 
 // ---- INIT ----
