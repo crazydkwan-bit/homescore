@@ -487,6 +487,38 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <button class="btn btn-amber" onclick="giveCustomStar()">ให้ดาว ⭐</button>
       </div>
     </div>
+
+    <div style="border-top:1.5px dashed #F4C0D1;margin:16px 0 12px"></div>
+    <div class="section-label" style="color:var(--red-600)">หักดาว</div>
+
+    <div class="give-card" onclick="deductStarQuick('ไม่ทำตามตาราง',2)" style="background:var(--red-50);border-color:#F4C0C0;cursor:pointer">
+      <div class="give-icon" style="background:#F4C0C0">📅</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600;color:#791F1F">ไม่ทำตามตาราง</div><div style="font-size:11px;color:var(--red-600);margin-top:1px">ไม่ทำกิจกรรมที่กำหนด</div></div>
+      <button class="btn btn-sm" style="background:#FCEBEB;color:var(--red-600);border:1px solid #F4C0C0">−2 ⭐</button>
+    </div>
+    <div class="give-card" onclick="deductStarQuick('ไม่เชื่อฟัง',2)" style="background:var(--red-50);border-color:#F4C0C0;cursor:pointer">
+      <div class="give-icon" style="background:#F4C0C0">🙅</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600;color:#791F1F">ไม่เชื่อฟัง</div><div style="font-size:11px;color:var(--red-600);margin-top:1px">ขัดคำสั่งพ่อแม่</div></div>
+      <button class="btn btn-sm" style="background:#FCEBEB;color:var(--red-600);border:1px solid #F4C0C0">−2 ⭐</button>
+    </div>
+    <div class="give-card" onclick="deductStarQuick('ทะเลาะกับพี่/น้อง',3)" style="background:var(--red-50);border-color:#F4C0C0;cursor:pointer">
+      <div class="give-icon" style="background:#F4C0C0">😤</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600;color:#791F1F">ทะเลาะกับพี่/น้อง</div><div style="font-size:11px;color:var(--red-600);margin-top:1px">ทำร้ายหรือทะเลาะกัน</div></div>
+      <button class="btn btn-sm" style="background:#FCEBEB;color:var(--red-600);border:1px solid #F4C0C0">−3 ⭐</button>
+    </div>
+
+    <div class="card" style="margin-top:4px">
+      <div class="section-label" style="color:var(--red-600)">หักดาวพิเศษ</div>
+      <div style="margin-bottom:8px">
+        <input id="deduct-reason" placeholder="เหตุผล..." style="width:100%;padding:10px 12px;border:1px solid #F4C0C0;border-radius:10px;font-size:14px;font-family:inherit">
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button onclick="deductStarAdj(-1)" style="width:36px;height:36px;border-radius:50%;border:1px solid #F4C0C0;background:none;font-size:18px;cursor:pointer;color:var(--red-600)">−</button>
+        <div style="flex:1;text-align:center;font-size:22px;font-weight:700;color:var(--red-600)" id="deduct-star-num">2</div>
+        <button onclick="deductStarAdj(1)" style="width:36px;height:36px;border-radius:50%;border:1px solid #F4C0C0;background:none;font-size:18px;cursor:pointer;color:var(--red-600)">+</button>
+        <button style="padding:10px 16px;border-radius:99px;background:#FCEBEB;color:var(--red-600);border:1.5px solid #F4C0C0;font-size:13px;font-weight:600;cursor:pointer" onclick="deductCustomStar()">หักดาว ⭐</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1355,6 +1387,24 @@ window.giveCustomStar = async () => {
   const reason = document.getElementById('custom-reason').value.trim() || 'ดาวพิเศษ';
   await addStars(currentKid, customStarCount, reason);
   document.getElementById('custom-reason').value = '';
+};
+
+let deductStarCount = 2;
+window.deductStarAdj = (d) => {
+  deductStarCount = Math.max(1, Math.min(10, deductStarCount + d));
+  document.getElementById('deduct-star-num').textContent = deductStarCount;
+};
+window.deductStarQuick = async (reason, amount) => {
+  const cur = dbData[currentKid].stars || 0;
+  if (cur < amount) { showToast('ดาวไม่พอจะหัก!'); return; }
+  await spendStars(currentKid, amount, reason);
+};
+window.deductCustomStar = async () => {
+  const reason = document.getElementById('deduct-reason').value.trim() || 'หักดาวพิเศษ';
+  const cur = dbData[currentKid].stars || 0;
+  if (cur < deductStarCount) { showToast('ดาวไม่พอจะหัก!'); return; }
+  await spendStars(currentKid, deductStarCount, reason);
+  document.getElementById('deduct-reason').value = '';
 };
 window.doRedeem = async (id, label, cost) => { await spendStars(redeemKid, cost, label); renderRedeemList(); };
 
